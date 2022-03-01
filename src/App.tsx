@@ -3,7 +3,7 @@ import './App.css'
 import styled from 'styled-components'
 import { RainfocusEvent, RowProps } from './types'
 import { useDispatch, useSelector } from 'react-redux'
-import { getEvents, selectRenderForm, setEvent, setRenderForm, selectEventList, deleteEvent } from './components/EventInfo/eventSlice'
+import { getEvents, selectRenderForm, setEvent, setRenderForm, selectEventList, deleteEvent, setCurrentEventIndex } from './components/EventInfo/eventSlice'
 import { useNavigate } from 'react-router-dom'
 import Form from './components/Form'
 
@@ -21,7 +21,7 @@ const App = () => {
     dispatch(setEvent(rfEvent))
     navigate('/event')
   }
-  const handleButtonClick = (event: PointerEvent, type: 'add' | 'edit' | 'delete', rfEvent?: RainfocusEvent<string>,) => {
+  const handleButtonClick = (event: PointerEvent, type: 'add' | 'edit' | 'delete', rfEvent?: RainfocusEvent<string>, index?: number) => {
     event.stopPropagation()
     switch (type) {
     case 'add':
@@ -35,8 +35,9 @@ const App = () => {
       }
       break
     case 'delete':
-      if (rfEvent !== undefined && Object.prototype.hasOwnProperty.call(rfEvent, 'id')) {
-        dispatch(setEvent(rfEvent))
+      console.log(index)
+      if (rfEvent !== undefined && index !== undefined && Object.prototype.hasOwnProperty.call(rfEvent, 'id')) {
+        dispatch(setCurrentEventIndex(index))
         dispatch(deleteEvent(rfEvent.id as string))
       }
       break
@@ -71,7 +72,7 @@ const App = () => {
                           <button onPointerUp={(event: PointerEvent) => handleButtonClick(event, 'edit', rfEvent)}>Edit</button>
                         </td>
                         <td>
-                          <button onPointerUp={(event: PointerEvent) => handleButtonClick(event, 'delete', rfEvent)}>Delete</button>
+                          <button onPointerUp={(event: PointerEvent) => handleButtonClick(event, 'delete', rfEvent, index)}>Delete</button>
                         </td>
                       </Fragment>
                     )}
