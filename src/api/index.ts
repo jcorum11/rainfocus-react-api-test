@@ -5,7 +5,7 @@ const api = {
     const response = await fetch('https://rf-json-server.herokuapp.com/events/')
     return response
   },
-  async postEvent(rfEvent: RainfocusEvent<boolean>) {
+  async postEvent(rfEvent: RainfocusEvent<string>) {
     const response = await fetch('https://rf-json-server.herokuapp.com/events/', {
       method: 'POST',
       headers: {
@@ -15,7 +15,8 @@ const api = {
     })
     return response
   },
-  async putEvent(rfEvent: RainfocusEvent<boolean>) {
+  async putEvent(rfEvent: RainfocusEvent<string>) {
+    console.log(rfEvent)
     const response = await fetch(`https://rf-json-server.herokuapp.com/events/${rfEvent.id}`, {
       method: 'PUT',
       headers: {
@@ -30,8 +31,7 @@ const api = {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(rfEventId)
+      }
     })
     return response
   }
