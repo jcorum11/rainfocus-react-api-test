@@ -1,11 +1,12 @@
 import React, { FormEvent } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { postEvent, selectInputValues, setRenderForm } from '../EventInfo/eventSlice'
+import { putEvent, selectCurrentEvent, selectInputValues, setRenderForm, setEvent } from '../EventInfo/eventSlice'
 import Input from '../Input.tsx'
 
 const Form = () => {
   const dispatch = useDispatch()
   const inputValues = useSelector(selectInputValues)
+  const currentEvent = useSelector(selectCurrentEvent)
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault()
     const data = {
@@ -17,13 +18,15 @@ const Form = () => {
       description: inputValues.description,
       email: inputValues.email,
       image: inputValues.image,
-      id: inputValues.id,
-      isActive: Boolean(inputValues.isActive),
+      id: currentEvent.id,
+      isActive: inputValues.isActive,
       name: inputValues.name,
       phone: inputValues.phone,
       time: inputValues.time
     }
-    dispatch(postEvent(data))
+    dispatch(putEvent(data))
+    dispatch(setEvent(data))
+    dispatch(setRenderForm(false))
   }
   return (
     <form action='submit'>

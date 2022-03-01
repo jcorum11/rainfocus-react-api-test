@@ -4,7 +4,7 @@ import { RootState } from '../../store'
 import { RfEventState } from '../../types'
 import api from '../../api'
 
-export const postEvent = createAsyncThunk('events/postEvent', async (rfEvent: RainfocusEvent<boolean>) => {
+export const postEvent = createAsyncThunk('events/postEvent', async (rfEvent: RainfocusEvent<string>) => {
   const response = await api.postEvent(rfEvent)
   return await response.json()
 })
@@ -14,7 +14,7 @@ export const getEvents = createAsyncThunk('events/getEvent', async () => {
   return await response.json()
 })
 
-export const putEvent = createAsyncThunk('events/putEvent', async (rfEvent: RainfocusEvent<boolean>) => {
+export const putEvent = createAsyncThunk('events/putEvent', async (rfEvent: RainfocusEvent<string>) => {
   const response = await api.putEvent(rfEvent)
   return await response.json()
 })
@@ -42,6 +42,8 @@ const initialState: RfEventState = {
   },
   postStatus: 'idle',
   getStatus: 'idle',
+  putStatus: 'idle',
+  deleteStatus: 'idle',
   eventList: [],
   renderForm: false,
   inputValues: {
@@ -77,25 +79,51 @@ export const eventsSlice = createSlice({
     }
   },
   extraReducers: builder => {
+    builder.addCase(getEvents.pending, state => {
+      state.getStatus = 'pending'
+    }),
     builder.addCase(postEvent.pending, state => {
       state.postStatus = 'pending'
     }),
-    builder.addCase(postEvent.rejected, state => {
-      state.postStatus = 'failed'
+    builder.addCase(putEvent.pending, state => {
+      state.putStatus = 'pending'
     }),
-    builder.addCase(postEvent.fulfilled, (state, action) => {
-      state.postStatus = 'succeeded'
-      state.eventList.push(action.payload)
-    }),
-    builder.addCase(getEvents.pending, state => {
-      state.getStatus = 'pending'
+    builder.addCase(deleteEvent.pending, state => {
+      state.deleteStatus = 'pending'
     }),
     builder.addCase(getEvents.rejected, state => {
       state.getStatus = 'failed'
     }),
-    builder.addCase(getEvents.fulfilled, (state, action) => {
+    builder.addCase(postEvent.rejected, state => {
+      state.postStatus = 'failed'
+    }),
+    builder.addCase(putEvent.rejected, state => {
+      state.putStatus = 'failed'
+    }),
+    builder.addCase(deleteEvent.rejected, state => {
+      state.deleteStatus = 'failed'
+    }),
+    builder.addCase(getEvents.fulfilled, (state, action: PayloadAction<RainfocusEvent<string>[]>) => {
       state.getStatus = 'succeeded'
       state.eventList = action.payload
+    }),
+    builder.addCase(postEvent.fulfilled, (state, action: PayloadAction<RainfocusEvent<string>>) => {
+      state.postStatus = 'succeeded'
+      state.eventList.push(action.payload)
+    }),
+    builder.addCase(putEvent.fulfilled, (state, action: PayloadAction<RainfocusEvent<string>>) => {
+      state.putStatus = 'succeeded'
+      const index = state.eventList.indexOf(action.payload)
+      if (index > -1) {
+        state.eventList.splice(index, 1, action.payload)
+      }
+    }),
+    builder.addCase(deleteEvent.fulfilled, (state, action: PayloadAction<string>) => {
+      state.deleteStatus = 'succeeded'
+      const index = state.eventList.indexOf(state.currentEvent)
+      if (index > -1) {
+        state.eventList.splice(index, 1)
+      }
     })
   }
 })

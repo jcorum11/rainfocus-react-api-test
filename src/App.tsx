@@ -21,17 +21,25 @@ const App = () => {
     dispatch(setEvent(rfEvent))
     navigate('/event')
   }
-  const handleButtonClick = (event: PointerEvent, type: 'add' | 'edit' | 'delete') => {
+  const handleButtonClick = (event: PointerEvent, type: 'add' | 'edit' | 'delete', rfEvent?: RainfocusEvent<string>,) => {
     event.stopPropagation()
     switch (type) {
     case 'add':
       dispatch(setRenderForm(true))
       break
     case 'edit':
-      dispatch(setRenderForm(true))
+      if (rfEvent !== undefined) {
+        dispatch(setEvent(rfEvent))
+        navigate('/event')
+        dispatch(setRenderForm(true))
+      }
       break
     case 'delete':
-      dispatch(deleteEvent('1'))
+      if (rfEvent !== undefined && Object.prototype.hasOwnProperty.call(rfEvent, 'id')) {
+        dispatch(setEvent(rfEvent))
+        dispatch(deleteEvent(rfEvent.id as string))
+      }
+      break
     }
   }
   return (
@@ -60,10 +68,10 @@ const App = () => {
                           <button onPointerUp={(event: PointerEvent) => handleButtonClick(event, 'add')}>Add</button>
                         </td>
                         <td>
-                          <button onPointerUp={(event: PointerEvent) => handleButtonClick(event, 'edit')}>Edit</button>
+                          <button onPointerUp={(event: PointerEvent) => handleButtonClick(event, 'edit', rfEvent)}>Edit</button>
                         </td>
                         <td>
-                          <button onPointerUp={(event: PointerEvent) => handleButtonClick(event, 'delete')}>Delete</button>
+                          <button onPointerUp={(event: PointerEvent) => handleButtonClick(event, 'delete', rfEvent)}>Delete</button>
                         </td>
                       </Fragment>
                     )}

@@ -34,7 +34,9 @@ export interface RfEventState {
   currentEvent: RainfocusEvent<string>
   postStatus: Status
   getStatus: Status
-  eventList: RainfocusEvent<string>[] 
+  putStatus: Status
+  deleteStatus: Status
+  eventList: RainfocusEvent<string>[]
   renderForm: boolean
   inputValues: RainfocusEvent<string>
 }
