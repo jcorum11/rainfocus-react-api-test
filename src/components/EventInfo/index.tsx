@@ -1,12 +1,18 @@
 import React, { Fragment } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 import Form from '../Form'
-import { selectCurrentEvent, selectRenderForm, setRenderForm } from './eventSlice'
+import { selectCurrentEvent, selectRenderForm, setRenderForm, deleteEvent } from './eventSlice'
 
 const EventInfo = () => {
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   const currentEvent = useSelector(selectCurrentEvent)
   const renderForm = useSelector(selectRenderForm)
+  const handleDeleteClick = () => {
+    dispatch(deleteEvent(currentEvent.id as string))
+    navigate('/')
+  }
   return (
     <Fragment>
       <div>
@@ -25,8 +31,8 @@ const EventInfo = () => {
       </div>
       {!renderForm ? (
         <div>
-          <button onClick={() => dispatch(setRenderForm(true))}>Edit</button>
-          <button>Delete</button>
+          <button onPointerUp={() => dispatch(setRenderForm(true))}>Edit</button>
+          <button onPointerUp={handleDeleteClick}>Delete</button>
         </div>
       ) : <Form />}
     </Fragment>

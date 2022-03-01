@@ -17,7 +17,8 @@ const App = () => {
   useEffect(() => {
     dispatch(getEvents())
   }, [])
-  const handleRowClick = (rfEvent: RainfocusEvent<string>) => {
+  const handleRowClick = (rfEvent: RainfocusEvent<string>, index: number) => {
+    dispatch(setCurrentEventIndex(index))
     dispatch(setEvent(rfEvent))
     navigate('/event')
   }
@@ -59,7 +60,7 @@ const App = () => {
               eventList.length > 0 &&
               eventList.map((rfEvent: RainfocusEvent<string>, index) => {
                 return (
-                  <Row key={`company-${rfEvent.id}`} backgroundColor={indexOfHoveredElement === index ? 'yellow' : 'white'} onMouseOver={() => setIndexOfHoveredElement(index)} onMouseLeave={() => setIndexOfHoveredElement(-1)} onPointerUp={() => handleRowClick(rfEvent)}>
+                  <Row key={`company-${rfEvent.id}`} backgroundColor={indexOfHoveredElement === index ? 'yellow' : 'white'} onMouseOver={() => setIndexOfHoveredElement(index)} onMouseLeave={() => setIndexOfHoveredElement(-1)} onPointerUp={() => handleRowClick(rfEvent, index)}>
                     <td>{rfEvent.name}</td>
                     <td>{rfEvent.description}</td>
                     <td>{rfEvent.company}</td>
