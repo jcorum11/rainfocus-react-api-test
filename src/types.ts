@@ -32,6 +32,7 @@ export type Status = 'idle' | 'pending' | 'succeeded' | 'failed'
 
 export interface RfEventState {
   currentEvent: RainfocusEvent<string>
+  currentEventIndex: number
   postStatus: Status
   getStatus: Status
   putStatus: Status

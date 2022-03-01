@@ -40,6 +40,7 @@ const initialState: RfEventState = {
     phone: '',
     time: ''
   },
+  currentEventIndex: -1,
   postStatus: 'idle',
   getStatus: 'idle',
   putStatus: 'idle',
@@ -76,6 +77,9 @@ export const eventsSlice = createSlice({
     setInputValue: (state, action: PayloadAction<{ key: string; value: string }>) => {
       const { key, value } = action.payload
       state.inputValues[key] = value
+    },
+    setCurrentEventIndex: (state, action: PayloadAction<number>) => {
+      state.currentEventIndex = action.payload
     }
   },
   extraReducers: builder => {
@@ -118,21 +122,22 @@ export const eventsSlice = createSlice({
         state.eventList.splice(index, 1, action.payload)
       }
     }),
-    builder.addCase(deleteEvent.fulfilled, (state, action: PayloadAction<string>) => {
+    builder.addCase(deleteEvent.fulfilled, (state) => {
       state.deleteStatus = 'succeeded'
-      const index = state.eventList.indexOf(state.currentEvent)
-      if (index > -1) {
-        state.eventList.splice(index, 1)
+      console.log(state.currentEventIndex)
+      if (state.currentEventIndex > -1) {
+        state.eventList.splice(state.currentEventIndex, 1)
       }
     })
   }
 })
 
-export const { setEvent, setRenderForm, setInputValue } = eventsSlice.actions
+export const { setEvent, setRenderForm, setInputValue, setCurrentEventIndex } = eventsSlice.actions
 export const selectCurrentEvent = (state: RootState) => state.events.currentEvent
 export const selectRenderForm = (state: RootState) => state.events.renderForm
 export const selectPostStatus = (state: RootState) => state.events.postStatus
 export const selectEventList = (state: RootState) => state.events.eventList
 export const selectInputValues = (state: RootState) => state.events.inputValues
+export const selectCurrentEventIndex = (state: RootState) => state.events.currentEventIndex
 
 export default eventsSlice.reducer
