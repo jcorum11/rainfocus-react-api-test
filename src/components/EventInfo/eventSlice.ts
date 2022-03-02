@@ -5,23 +5,53 @@ import { RfEventState } from '../../types'
 import api from '../../api'
 
 export const getEvents = createAsyncThunk('events/getEvent', async () => {
-  const response = await api.getEvents()
-  return await response.json()
+  try {
+    const response = await api.getEvents()
+    if (response !== undefined) {
+      return await response.json()
+    } else {
+      throw new Error('Response is "undefined"')
+    }
+  } catch (error) {
+    console.error(`Error on eventSlice.getEvents: ${error}`)
+  }
 })
 
 export const postEvent = createAsyncThunk('events/postEvent', async (rfEvent: RainfocusEvent<string>) => {
-  const response = await api.postEvent(rfEvent)
-  return await response.json()
+  try {
+    const response = await api.postEvent(rfEvent)
+    if (response !== undefined) {
+      return await response.json()
+    }
+  } catch (error) {
+    console.error(`Error on eventSlice.postEvent: ${error}`)
+  }
 })
 
 export const putEvent = createAsyncThunk('events/putEvent', async (rfEvent: RainfocusEvent<string>) => {
-  const response = await api.putEvent(rfEvent)
-  return await response.json()
+  try {
+    const response = await api.putEvent(rfEvent)
+    if (response !== undefined) {
+      return await response.json()
+    } else {
+      throw new Error('Response is "undefined"')
+    }
+  } catch (error) {
+    console.error(`Error on eventSlice.putEvent: ${error}`)
+  }
 })
 
 export const deleteEvent = createAsyncThunk('events/deleteEvent', async (rfEventId: string) => {
-  const response = await api.deleteEvent(rfEventId)
-  return await response.json()
+  try {
+    const response = await api.deleteEvent(rfEventId)
+    if (response !== undefined) {
+      return await response.json()
+    } else {
+      throw new Error('Response is "undefined"')
+    }
+  } catch (error) {
+    console.error(`Error on eventSlice.putEvent: ${error}`)
+  }
 })
 
 const initialState: RfEventState = {
@@ -109,22 +139,22 @@ export const eventsSlice = createSlice({
     }),
     builder.addCase(getEvents.fulfilled, (state, action: PayloadAction<RainfocusEvent<string>[]>) => {
       state.getStatus = 'succeeded'
-      action.payload.sort((a: RainfocusEvent<string>, b: RainfocusEvent<string>) => (a.company > b.company) ? 1 : -1)
+      action.payload.sort((a: RainfocusEvent<string>, b: RainfocusEvent<string>) => (a.company > b.company ? 1 : -1))
       state.eventList = action.payload
     }),
     builder.addCase(postEvent.fulfilled, (state, action: PayloadAction<RainfocusEvent<string>>) => {
       state.postStatus = 'succeeded'
       state.eventList.push(action.payload)
-      state.eventList.sort((a: RainfocusEvent<string>, b: RainfocusEvent<string>) => (a.company > b.company) ? 1 : -1)
+      state.eventList.sort((a: RainfocusEvent<string>, b: RainfocusEvent<string>) => (a.company > b.company ? 1 : -1))
     }),
     builder.addCase(putEvent.fulfilled, (state, action: PayloadAction<RainfocusEvent<string>>) => {
       state.putStatus = 'succeeded'
       if (state.currentEventIndex > -1) {
         state.eventList.splice(state.currentEventIndex, 1, action.payload)
-        state.eventList.sort((a: RainfocusEvent<string>, b: RainfocusEvent<string>) => (a.company > b.company) ? 1 : -1)
+        state.eventList.sort((a: RainfocusEvent<string>, b: RainfocusEvent<string>) => (a.company > b.company ? 1 : -1))
       }
     }),
-    builder.addCase(deleteEvent.fulfilled, (state) => {
+    builder.addCase(deleteEvent.fulfilled, state => {
       state.deleteStatus = 'succeeded'
       if (state.currentEventIndex > -1) {
         state.eventList.splice(state.currentEventIndex, 1)
@@ -136,7 +166,10 @@ export const eventsSlice = createSlice({
 export const { setEvent, setRenderForm, setInputValue, setCurrentEventIndex } = eventsSlice.actions
 export const selectCurrentEvent = (state: RootState) => state.events.currentEvent
 export const selectRenderForm = (state: RootState) => state.events.renderForm
+export const selectGetStatus = (state: RootState) => state.events.getStatus
 export const selectPostStatus = (state: RootState) => state.events.postStatus
+export const selectPutStatus = (state: RootState) => state.events.putStatus
+export const selectDeleteStatus = (state: RootState) => state.events.deleteStatus
 export const selectEventList = (state: RootState) => state.events.eventList
 export const selectInputValues = (state: RootState) => state.events.inputValues
 export const selectCurrentEventIndex = (state: RootState) => state.events.currentEventIndex

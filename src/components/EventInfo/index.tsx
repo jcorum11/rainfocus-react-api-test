@@ -2,13 +2,14 @@ import React, { Fragment } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import Form from '../Form'
-import { selectCurrentEvent, selectRenderForm, setRenderForm, deleteEvent } from './eventSlice'
+import { selectCurrentEvent, selectRenderForm, setRenderForm, deleteEvent, selectPutStatus } from './eventSlice'
 
 const EventInfo = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const currentEvent = useSelector(selectCurrentEvent)
   const renderForm = useSelector(selectRenderForm)
+  const putStatus = useSelector(selectPutStatus)
   const handleDeleteClick = () => {
     dispatch(deleteEvent(currentEvent.id as string))
     navigate('/')
@@ -35,6 +36,7 @@ const EventInfo = () => {
           <button onPointerUp={handleDeleteClick}>Delete</button>
         </div>
       ) : <Form />}
+      {putStatus === 'failed' && <h1>We could not send your update. Please try again later.</h1>}
     </Fragment>
   )
 }
