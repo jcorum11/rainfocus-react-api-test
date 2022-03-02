@@ -65,7 +65,19 @@ const App = () => {
                       <td>{rfEvent.name}</td>
                       <td>{rfEvent.description}</td>
                       <td>{rfEvent.company}</td>
-                      {indexOfHoveredElement === index && (
+                      {indexOfHoveredElement !== index ? (
+                        <Fragment>
+                          <td>
+                            <Button disabled>add</Button>
+                          </td>
+                          <td>
+                            <Button disabled>edit</Button>
+                          </td>
+                          <td>
+                            <Button disabled>delete</Button>
+                          </td>
+                        </Fragment>
+                      ) : (
                         <Fragment>
                           <td>
                             <button onPointerUp={(event: PointerEvent) => handleButtonClick(event, 'add')}>Add</button>
@@ -100,6 +112,10 @@ const App = () => {
 const Row = styled.tr<RowProps>`
   background-color: ${({ backgroundColor }) => backgroundColor};
   cursor: pointer;
+`
+
+const Button = styled.button`
+  visibility: hidden;
 `
 
 export default App
