@@ -4,13 +4,13 @@ import { RootState } from '../../store'
 import { RfEventState } from '../../types'
 import api from '../../api'
 
-export const postEvent = createAsyncThunk('events/postEvent', async (rfEvent: RainfocusEvent<string>) => {
-  const response = await api.postEvent(rfEvent)
+export const getEvents = createAsyncThunk('events/getEvent', async () => {
+  const response = await api.getEvents()
   return await response.json()
 })
 
-export const getEvents = createAsyncThunk('events/getEvent', async () => {
-  const response = await api.getEvents()
+export const postEvent = createAsyncThunk('events/postEvent', async (rfEvent: RainfocusEvent<string>) => {
+  const response = await api.postEvent(rfEvent)
   return await response.json()
 })
 
@@ -109,22 +109,23 @@ export const eventsSlice = createSlice({
     }),
     builder.addCase(getEvents.fulfilled, (state, action: PayloadAction<RainfocusEvent<string>[]>) => {
       state.getStatus = 'succeeded'
+      action.payload.sort((a: RainfocusEvent<string>, b: RainfocusEvent<string>) => (a.company > b.company) ? 1 : -1)
       state.eventList = action.payload
     }),
     builder.addCase(postEvent.fulfilled, (state, action: PayloadAction<RainfocusEvent<string>>) => {
       state.postStatus = 'succeeded'
       state.eventList.push(action.payload)
+      state.eventList.sort((a: RainfocusEvent<string>, b: RainfocusEvent<string>) => (a.company > b.company) ? 1 : -1)
     }),
     builder.addCase(putEvent.fulfilled, (state, action: PayloadAction<RainfocusEvent<string>>) => {
       state.putStatus = 'succeeded'
-      const index = state.eventList.indexOf(action.payload)
-      if (index > -1) {
-        state.eventList.splice(index, 1, action.payload)
+      if (state.currentEventIndex > -1) {
+        state.eventList.splice(state.currentEventIndex, 1, action.payload)
+        state.eventList.sort((a: RainfocusEvent<string>, b: RainfocusEvent<string>) => (a.company > b.company) ? 1 : -1)
       }
     }),
     builder.addCase(deleteEvent.fulfilled, (state) => {
       state.deleteStatus = 'succeeded'
-      console.log(state.currentEventIndex)
       if (state.currentEventIndex > -1) {
         state.eventList.splice(state.currentEventIndex, 1)
       }

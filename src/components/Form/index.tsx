@@ -1,6 +1,6 @@
 import React, { FormEvent } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { putEvent, selectCurrentEvent, selectInputValues, setRenderForm, setEvent } from '../EventInfo/eventSlice'
+import { postEvent, selectCurrentEvent, selectInputValues, setRenderForm, setEvent } from '../EventInfo/eventSlice'
 import Input from '../Input.tsx'
 
 const Form = () => {
@@ -24,7 +24,7 @@ const Form = () => {
       phone: inputValues.phone,
       time: inputValues.time
     }
-    dispatch(putEvent(data))
+    dispatch(postEvent(data))
     dispatch(setEvent(data))
     dispatch(setRenderForm(false))
   }

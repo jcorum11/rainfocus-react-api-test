@@ -16,7 +16,6 @@ const api = {
     return response
   },
   async putEvent(rfEvent: RainfocusEvent<string>) {
-    console.log(rfEvent)
     const response = await fetch(`https://rf-json-server.herokuapp.com/events/${rfEvent.id}`, {
       method: 'PUT',
       headers: {
