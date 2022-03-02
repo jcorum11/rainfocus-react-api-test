@@ -48,6 +48,7 @@ const App = () => {
   return (
     <Fragment>
       <section>
+        <h1>Hover over a row for options. Click a row for more details and options.</h1>
         <table>
           <thead>
             <tr>
